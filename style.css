@@ -1,0 +1,396 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+h1 {
+    color: #4a4a4a;
+}
+
+/* --- 頂部資訊板與按鈕 --- */
+#timer-board {
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.time-low {
+    color: #dc3545;
+}
+
+#high-score-board {
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #ffc107;
+}
+
+#score-board {
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+/* 遊戲控制按鈕樣式 */
+#reset-button {
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #f0ad4e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    margin-right: 10px; 
+}
+
+#reset-button:hover {
+    background-color: #ec971f;
+}
+
+#mode-toggle-button {
+    padding: 8px 15px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #6c757d; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#mode-toggle-button:hover {
+    background-color: #5a6268;
+}
+
+
+/* --- 容器 --- */
+#slots-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 90%;
+    max-width: 800px;
+    margin: 30px 0;
+    min-height: 100px;
+}
+
+#battery-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    width: 650px;
+    margin: 30px 0;
+    min-height: 100px;
+}
+
+
+/* --- 電池槽樣式 (通用基礎) --- */
+.slot-container {
+    display: flex;
+    align-items: center;
+    border: 3px dashed #aaa;
+    border-radius: 10px;
+    width: 300px;
+    height: 80px;
+    background-color: #e0e0e0;
+    padding: 5px;
+}
+
+.slot-filled {
+    border: none; 
+    background-color: transparent;
+}
+
+.slot-filled .slot-body,
+.slot-filled .slot-end-element-wrapper { 
+    display: none;
+}
+
+/* 電池槽的兩端容器 */
+.slot-end { 
+    width: 25px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative; 
+}
+
+/* 電池槽端點的實際視覺元素容器 */
+.slot-end-element-wrapper { 
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px; 
+}
+
+/* ----------------------------------------------------- */
+/* A. 電池槽: 普通模式 (有顏色、有文字提示) */
+/* ----------------------------------------------------- */
+.slot-end.normal-mode .slot-end-element-wrapper.positive-end-visual {
+    background-color: #d9534f; /* 紅色 */
+    color: white;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.slot-end.normal-mode .slot-end-element-wrapper.positive-end-visual::before {
+    content: '+';
+}
+
+.slot-end.normal-mode .slot-end-element-wrapper.negative-end-visual {
+    background-color: #5bc0de; /* 藍色 */
+    color: white;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.slot-end.normal-mode .slot-end-element-wrapper.negative-end-visual::before {
+    content: '-';
+}
+
+
+/* ----------------------------------------------------- */
+/* B. 電池槽: 困難模式 (無顏色、無文字、現實外觀) */
+/* ----------------------------------------------------- */
+.slot-end.hard-mode .slot-end-element-wrapper {
+    background-color: #ccc; /* 灰色背景 */
+    color: transparent; /* 隱藏文字 */
+}
+
+/* 困難模式下的負極彈簧 (強化 CSS 彈簧視覺) */
+.slot-end.hard-mode .slot-end-element-wrapper.negative-end-visual {
+    /* 模擬金屬彈簧的 3D 效果 */
+    background: repeating-linear-gradient(
+        90deg,
+        #555, 
+        #555 3px,
+        #ccc 3px, 
+        #ccc 8px
+    );
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5); /* 增加深度 */
+}
+
+/* 困難模式下的正極平坦 */
+.slot-end.hard-mode .slot-end-element-wrapper.positive-end-visual {
+    background-color: #bbb; /* 淺灰色金屬感 */
+    border: 1px solid #999;
+}
+
+
+.slot-body {
+    flex-grow: 1;
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+/* --- 電池樣式 (通用基礎 - 黑色機身) --- */
+.battery {
+    display: flex;
+    align-items: center;
+    width: 250px;
+    height: 80px;
+    border: 2px solid #333;
+    border-radius: 8px;
+    background-color: #1a1a1a; /* 黑色機身 */
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5); /* 增加黑色機身質感 */
+    cursor: grab;
+    transition: box-shadow 0.2s;
+}
+
+.dragging {
+    position: absolute !important;
+    z-index: 1000;
+    opacity: 0.8;
+}
+
+.battery:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 電池端點的容器 */
+.battery-cap {
+    width: 20px; 
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative; 
+    padding: 5px 0;
+    box-sizing: border-box;
+}
+
+/* 電池端點的實際視覺元素容器 (金屬帽) */
+.battery-cap-visual-wrapper { 
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: transparent; /* 隱藏容器符號 */
+    font-weight: bold;
+    font-size: 1.2em;
+    position: relative;
+    background: linear-gradient(to bottom, #ccc, #aaa); /* 金屬質感 */
+}
+
+
+/* --- 電池標籤 (在黑色機身上模擬印字) --- */
+.battery-label {
+    flex-grow: 1;
+    text-align: center;
+    font-weight: bold;
+    color: #f0f0f0; /* 白色印字 */
+    font-size: 1.1em;
+}
+.battery-label::before {
+    content: "PANASONIC NEO AA"; /* 模擬品牌文字 */
+    display: block;
+    font-size: 0.7em;
+    font-weight: normal;
+    color: #aaa;
+    margin-bottom: 2px;
+}
+
+
+/* ----------------------------------------------------- */
+/* A. 電池: 正極 (+) - 金屬色凸起 + 紅色提示塊 */
+/* ----------------------------------------------------- */
+.positive-cap .battery-cap-visual-wrapper {
+    /* 正極端點視覺 */
+}
+
+/* 真正凸起的效果 */
+.positive-cap .battery-cap-visual-wrapper::before {
+    content: ''; 
+    position: absolute;
+    width: 70%;
+    height: 70%;
+    background: linear-gradient(to bottom, #fff, #ddd); /* 凸起部分是亮色金屬 */
+    border-radius: 50%;
+    box-shadow: inset 0 2px 3px rgba(0,0,0,0.3); /* 輕微陰影產生凸起感 */
+}
+/* 紅色極性符號 (貼在電池體和端點之間) */
+.positive-cap::after {
+    content: '+';
+    position: absolute;
+    right: -5px; /* 移到端點和電池體之間 */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 40px;
+    background-color: #d9534f; /* 紅色 */
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 1px;
+    z-index: 5;
+}
+
+
+/* 圓角處理 - 預設正極在左邊 */
+.positive-cap {
+    border-radius: 5px 0 0 5px;
+}
+.positive-cap .battery-cap-visual-wrapper {
+    border-radius: 5px 0 0 5px;
+}
+
+/* ----------------------------------------------------- */
+/* B. 電池: 負極 (-) - 金屬色平坦 + 藍色提示塊 */
+/* ----------------------------------------------------- */
+.negative-cap .battery-cap-visual-wrapper {
+    /* 負極端點視覺 - 保持平坦 */
+    background: linear-gradient(to bottom, #aaa, #888); /* 負極金屬通常顏色稍深 */
+}
+
+.negative-cap .battery-cap-visual-wrapper::before {
+    content: ''; /* 保持平坦 */
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    box-shadow: none;
+}
+
+/* 藍色極性符號 (貼在電池體和端點之間) */
+.negative-cap::after {
+    content: '-';
+    position: absolute;
+    left: -5px; /* 移到端點和電池體之間 */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 40px;
+    background-color: #5bc0de; /* 藍色 */
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 1px;
+    z-index: 5;
+}
+
+
+/* 圓角處理 - 預設負極在右邊 */
+.negative-cap {
+    border-radius: 0 5px 5px 0;
+}
+.negative-cap .battery-cap-visual-wrapper {
+    border-radius: 0 5px 5px 0;
+}
+
+
+/* ----------------------------------------------------- */
+/* 反轉電池的圓角和提示塊位置處理 */
+/* ----------------------------------------------------- */
+.battery-reversed .positive-cap {
+    border-radius: 0 5px 5px 0; /* 正極在右邊 */
+}
+.battery-reversed .positive-cap .battery-cap-visual-wrapper {
+    border-radius: 0 5px 5px 0;
+}
+.battery-reversed .positive-cap::after {
+    right: unset;
+    left: -5px;
+}
+
+.battery-reversed .negative-cap {
+    border-radius: 5px 0 0 5px; /* 負極在左邊 */
+}
+.battery-reversed .negative-cap .battery-cap-visual-wrapper {
+    border-radius: 5px 0 0 5px;
+}
+.battery-reversed .negative-cap::after {
+    left: unset;
+    right: -5px;
+}
+
+
+/* --- 訊息區 --- */
+#message-area {
+    margin-top: 20px;
+    font-size: 1.2em;
+    min-height: 30px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.instruction {
+    color: #555;
+    margin-top: 10px;
+}
